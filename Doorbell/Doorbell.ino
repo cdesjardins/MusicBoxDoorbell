@@ -39,7 +39,6 @@ class Doorbell
 public:
 	Doorbell()
 		: mStartTime(0),
-		mTime(0),
 		mStepCnt(0),
 		mRing(false),
 		mState(DOORBELL_DISABLED),
@@ -155,7 +154,6 @@ public:
 	}
 private:
 	unsigned long mStartTime;
-	unsigned long mTime;
 	int mStepCnt;
 	bool mRing;
 	DoorbellStates mState;
