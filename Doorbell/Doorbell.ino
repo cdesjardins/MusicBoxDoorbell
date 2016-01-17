@@ -73,7 +73,6 @@ public:
 	void ring()
 	{
 		mRing = true;
-		Serial.println("ring");
 	}
 private:
 	unsigned long mTime;

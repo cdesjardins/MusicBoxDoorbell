@@ -69,3 +69,4 @@ void StepperMotor::stepIt()
     digitalWrite(mPinc, (mSteps[mStep] & 0x04) ? HIGH : LOW);
     digitalWrite(mPind, (mSteps[mStep] & 0x08) ? HIGH : LOW);
 }
+
