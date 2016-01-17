@@ -19,18 +19,30 @@
 #define DOORBELL_ENABLE_B_PIN   9
 
 #define STEPS_PER_REV			200
-#define REVS_PER_RING			30
+#define REVS_PER_RING			1
 #define STEPS_PER_RING			(STEPS_PER_REV * REVS_PER_RING)
 
+#define ENABLE_STEP_DELAY		500
+#define NORMAL_STEP_DELAY		5
+
 void ring();
+
+enum DoorbellStates
+{
+	DOORBELL_DISABLED,
+	DOORBELL_ENABLED,
+	DOORBELL_RINGING,
+};
 
 class Doorbell
 {
 public:
 	Doorbell()
-		: mTime(0),
+		: mStartTime(0),
+		mTime(0),
 		mStepCnt(0),
 		mRing(false),
+		mState(DOORBELL_DISABLED),
 		mStepper(StepperMotor(DOORBELL_STEPPER_A_PIN,
 					 DOORBELL_STEPPER_B_PIN,
 					 DOORBELL_STEPPER_C_PIN,
@@ -40,30 +52,97 @@ public:
 	{
 		Serial.begin(115200);
 		Serial.println("Doorbell");
-		mStepper.setEnabled(true);
+		mStepper.setEnabled(false);
 		attachInterrupt(digitalPinToInterrupt(DOORBELL_RING_PIN), ::ring, RISING);
 	}
 	
+	bool enabled(unsigned long t)
+	{
+		bool ret = false;
+		if (mStepper.getEnabled() == false)
+		{
+			mStepper.setEnabled(true);
+		}
+
+		if ((t - mStartTime) > ENABLE_STEP_DELAY)
+		{
+			ret = true;
+		}
+		return ret;
+	}
+
+	void transition(unsigned long t)
+	{
+		mStartTime = t;
+		switch (mState)
+		{
+			case DOORBELL_ENABLED:
+				mState = DOORBELL_RINGING;
+				break;
+			case DOORBELL_RINGING:
+				mState = DOORBELL_DISABLED;
+				break;
+			case DOORBELL_DISABLED:
+				mState = DOORBELL_ENABLED;
+				break;
+		}
+	}
+	
+	bool ringing(unsigned long t)
+	{
+		bool ret = false;
+		if ((t - mStartTime) > NORMAL_STEP_DELAY)
+		{
+			mStepper.stepForward();
+			mStartTime = t;
+			mStepCnt++;
+		}
+		if (mStepCnt >= STEPS_PER_RING)
+		{
+			ret = true;
+			mStepCnt = 0;
+		}
+		return ret;
+	}
+	
+	bool disabled(unsigned long t)
+	{
+		bool ret = false;
+		if ((t - mStartTime) > ENABLE_STEP_DELAY)
+		{
+			if (mStepper.getEnabled() == true)
+			{
+				mStepper.setEnabled(false);
+			}
+			ret = mRing;
+		}
+		return ret;
+	}
+
 	void process()
 	{
 		unsigned long t = millis();
-		if (mStepCnt != 0)
+		switch (mState)
 		{
-			if ((t - mTime) > 5)
-			{
-				mStepper.stepForward();
-				mTime = t;
-				mStepCnt++;
-			}
-			if (mStepCnt > STEPS_PER_RING)
-			{
-				mStepCnt = 0;
-			}
-		} else if (mRing == true)
-		{
-			mStepCnt++;
+			case DOORBELL_ENABLED:
+				if (enabled(t) == true)
+				{
+					transition(t);
+				}
+				break;
+			case DOORBELL_RINGING:
+				if (ringing(t) == true)
+				{
+					transition(t);
+				}
+				break;
+			case DOORBELL_DISABLED:
+				if (disabled(t) == true)
+				{
+					transition(t);
+				}
+				break;
 		}
-		
 		if (mRing == true)
 		{
 			mRing = false;
@@ -75,9 +154,11 @@ public:
 		mRing = true;
 	}
 private:
+	unsigned long mStartTime;
 	unsigned long mTime;
 	int mStepCnt;
 	bool mRing;
+	DoorbellStates mState;
 	StepperMotor mStepper;
 };
 
