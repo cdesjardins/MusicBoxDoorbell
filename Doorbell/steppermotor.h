@@ -9,27 +9,27 @@ public:
     void stepBackward();
     void setEnabled(bool enable);
     bool getEnabled();
-	
-	void printStepCnt()
-	{
-		Serial.print("StepCnt: ");
-		Serial.println(mStepCnt, DEC);
-		mStepCnt = 0;
-	}
+
+    void printStepCnt()
+    {
+        Serial.print("StepCnt: ");
+        Serial.println(mStepCnt, DEC);
+        mStepCnt = 0;
+    }
 
 protected:
     void stepIt();
     int mStep;
     static int mSteps[];
     bool mEnabled;
-	
-	int mPina;
-	int mPinb;
-	int mPinc;
-	int mPind;
-	int mPinena;
-	int mPinenb;
-	int mStepCnt;
+
+    int mPina;
+    int mPinb;
+    int mPinc;
+    int mPind;
+    int mPinena;
+    int mPinenb;
+    int mStepCnt;
 private:
 
 };

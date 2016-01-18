@@ -13,13 +13,13 @@ int StepperMotor::mSteps[] = {
 StepperMotor::StepperMotor(int pina, int pinb, int pinc, int pind, int pinena, int pinenb)
     : mStep(0),
     mEnabled(false),
-	mPina(pina),
-	mPinb(pinb),
-	mPinc(pinc),
-	mPind(pind),
-	mPinena(pinena),
-	mPinenb(pinenb),
-	mStepCnt(0)
+    mPina(pina),
+    mPinb(pinb),
+    mPinc(pinc),
+    mPind(pind),
+    mPinena(pinena),
+    mPinenb(pinenb),
+    mStepCnt(0)
 {
     pinMode(pina, OUTPUT);
     pinMode(pinb, OUTPUT);
@@ -64,11 +64,11 @@ void StepperMotor::stepIt()
     digitalWrite(mPinb, LOW);
     digitalWrite(mPinc, LOW);
     digitalWrite(mPind, LOW);
-    
+
     digitalWrite(mPina, (mSteps[mStep] & 0x01) ? HIGH : LOW);
     digitalWrite(mPinb, (mSteps[mStep] & 0x02) ? HIGH : LOW);
     digitalWrite(mPinc, (mSteps[mStep] & 0x04) ? HIGH : LOW);
     digitalWrite(mPind, (mSteps[mStep] & 0x08) ? HIGH : LOW);
-	mStepCnt++;
+    mStepCnt++;
 }
 
