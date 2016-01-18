@@ -11,8 +11,8 @@
 #define DOORBELL_RING_PIN 		18
 
 #define DOORBELL_STEPPER_A_PIN 	12
-#define DOORBELL_STEPPER_B_PIN  11
-#define DOORBELL_STEPPER_C_PIN  10
+#define DOORBELL_STEPPER_B_PIN  6
+#define DOORBELL_STEPPER_C_PIN  7
 #define DOORBELL_STEPPER_D_PIN  13
 
 #define DOORBELL_ENABLE_A_PIN   8
@@ -42,6 +42,7 @@ public:
 		mStepCnt(0),
 		mRing(false),
 		mState(DOORBELL_DISABLED),
+		mRingCnt(0),
 		mStepper(StepperMotor(DOORBELL_STEPPER_A_PIN,
 					 DOORBELL_STEPPER_B_PIN,
 					 DOORBELL_STEPPER_C_PIN,
@@ -53,21 +54,6 @@ public:
 		Serial.println("Doorbell");
 		mStepper.setEnabled(false);
 		attachInterrupt(digitalPinToInterrupt(DOORBELL_RING_PIN), ::ring, RISING);
-	}
-	
-	bool enabled(unsigned long t)
-	{
-		bool ret = false;
-		if (mStepper.getEnabled() == false)
-		{
-			mStepper.setEnabled(true);
-		}
-
-		if ((t - mStartTime) > ENABLE_STEP_DELAY)
-		{
-			ret = true;
-		}
-		return ret;
 	}
 
 	void transition(unsigned long t)
@@ -83,8 +69,26 @@ public:
 				break;
 			case DOORBELL_DISABLED:
 				mState = DOORBELL_ENABLED;
+				mRingCnt++;
 				break;
 		}
+		//Serial.print("transition: ");
+		//Serial.println(mState, DEC);
+	}
+	
+	bool enabled(unsigned long t)
+	{
+		bool ret = false;
+		if (mStepper.getEnabled() == false)
+		{
+			mStepper.setEnabled(true);
+		}
+
+		if ((t - mStartTime) > ENABLE_STEP_DELAY)
+		{
+			ret = true;
+		}
+		return ret;
 	}
 	
 	bool ringing(unsigned long t)
@@ -146,8 +150,23 @@ public:
 		{
 			mRing = false;
 		}
+		debug();
 	}
-	
+
+	void debug()
+	{
+		if (Serial.available() > 0)
+		{
+			Serial.print("Ring cnt: ");
+			Serial.println(mRingCnt, DEC);
+			int data;
+			do
+			{
+				data = Serial.read();
+			} while (data != -1);
+		}
+	}
+
 	void ring()
 	{
 		mRing = true;
@@ -157,6 +176,7 @@ private:
 	int mStepCnt;
 	bool mRing;
 	DoorbellStates mState;
+	int mRingCnt;
 	StepperMotor mStepper;
 };
 
@@ -165,6 +185,7 @@ static Doorbell *s_doorbell;
 void ring()
 {
 	s_doorbell->ring();
+	Serial.println("Ring");
 }
 
 void setup()
