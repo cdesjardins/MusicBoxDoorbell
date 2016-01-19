@@ -1,3 +1,10 @@
+/*
+*  steppermotor.h
+*
+*  Chris Desjardins
+*  Copyright 2016 chrisd.info All rights reserved.
+*
+*/
 #ifndef _STEPPER_MOTOR_Hxx
 #define _STEPPER_MOTOR_Hxx
 

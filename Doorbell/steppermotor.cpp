@@ -1,7 +1,13 @@
+/*
+*  steppermotor.cpp
+*
+*  Chris Desjardins
+*  Copyright 2016 chrisd.info All rights reserved.
+*
+*/
+
 #include "arduino.h"
 #include "steppermotor.h"
-
-
 
 int StepperMotor::mSteps[] = {
     0x0A,
