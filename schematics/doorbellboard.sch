@@ -3589,6 +3589,9 @@ It has a reduced top mask to make it harder to install upside-down.</description
 <sheets>
 <sheet>
 <plain>
+<text x="167.64" y="11.43" size="2.286" layer="94">Chris Desjardins</text>
+<text x="237.49" y="7.62" size="2.286" layer="94">1.0</text>
+<text x="167.64" y="7.62" size="2.286" layer="94">http://blog.chrisd.info</text>
 </plain>
 <instances>
 <instance part="U$1" gate="G$1" x="43.18" y="48.26"/>
