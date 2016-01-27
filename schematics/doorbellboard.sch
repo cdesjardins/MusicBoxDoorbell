@@ -3844,6 +3844,14 @@ It has a reduced top mask to make it harder to install upside-down.</description
 </nets>
 </sheet>
 </sheets>
+<errors>
+<approved hash="104,1,30.48,50.8,U$1,GND0,GND,,,"/>
+<approved hash="104,1,58.42,55.88,U$1,GND1,GND,,,"/>
+<approved hash="204,1,58.42,27.94,U$1,REF,,,,"/>
+<approved hash="106,1,58.42,25.4,3V3,,,,,"/>
+<approved hash="113,1,37.4227,99.2547,JP1,,,,,"/>
+<approved hash="113,1,87.63,105.642,C1,,,,,"/>
+</errors>
 </schematic>
 </drawing>
 </eagle>
