@@ -19,7 +19,7 @@
 #define DOORBELL_ENABLE_B_PIN   9
 
 #define STEPS_PER_REV           200
-#define REVS_PER_RING           1
+#define REVS_PER_RING           30
 #define STEPS_PER_RING          (STEPS_PER_REV * REVS_PER_RING)
 
 #define ENABLE_STEP_DELAY       500
