@@ -23,7 +23,7 @@
 #define STEPS_PER_RING          (STEPS_PER_REV * REVS_PER_RING)
 
 #define ENABLE_STEP_DELAY       500
-#define NORMAL_STEP_DELAY       5
+#define NORMAL_STEP_DELAY       1
 
 void ring();
 
@@ -96,7 +96,7 @@ public:
         bool ret = false;
         if ((t - mStartTime) > NORMAL_STEP_DELAY)
         {
-            mStepper.stepForward();
+            mStepper.stepBackward();
             mStartTime = t;
             mStepCnt++;
         }
