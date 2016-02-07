@@ -125,6 +125,7 @@ public:
     void process()
     {
         unsigned long t = millis();
+        noInterrupts();
         switch (mState)
         {
             case DOORBELL_ENABLED:
@@ -150,6 +151,7 @@ public:
         {
             mRing = false;
         }
+        interrupts();
         debug();
     }
 
