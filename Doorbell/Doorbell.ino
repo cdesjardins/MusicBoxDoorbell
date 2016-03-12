@@ -8,15 +8,17 @@
 
 #include "steppermotor.h"
 
-#define DOORBELL_RING_PIN       18
+#define DOORBELL_RING_PIN       2
 
-#define DOORBELL_STEPPER_A_PIN  12
-#define DOORBELL_STEPPER_B_PIN  6
-#define DOORBELL_STEPPER_C_PIN  7
-#define DOORBELL_STEPPER_D_PIN  13
+#define DOORBELL_STEPPER_A_PIN  A4
+#define DOORBELL_STEPPER_B_PIN  A5
+#define DOORBELL_STEPPER_C_PIN  4
+#define DOORBELL_STEPPER_D_PIN  5
 
-#define DOORBELL_ENABLE_A_PIN   8
-#define DOORBELL_ENABLE_B_PIN   9
+#define DOORBELL_ENABLE_PIN     7
+
+#define DOORBELL_LED_A_PIN      13
+#define DOORBELL_LED_B_PIN      11
 
 #define STEPS_PER_REV           200
 #define REVS_PER_RING           30
@@ -47,8 +49,9 @@ public:
                      DOORBELL_STEPPER_B_PIN,
                      DOORBELL_STEPPER_C_PIN,
                      DOORBELL_STEPPER_D_PIN,
-                     DOORBELL_ENABLE_A_PIN,
-                     DOORBELL_ENABLE_B_PIN))
+                     DOORBELL_ENABLE_PIN,
+                     DOORBELL_ENABLE_PIN)),
+        mLedValue(0)
     {
         Serial.begin(115200);
         Serial.println("Doorbell");
@@ -99,11 +102,16 @@ public:
             mStepper.stepBackward();
             mStartTime = t;
             mStepCnt++;
+            analogWrite(DOORBELL_LED_A_PIN, mLedValue);
+            analogWrite(DOORBELL_LED_B_PIN, 240 - mLedValue);
+            mLedValue += 4;
         }
         if (mStepCnt >= STEPS_PER_RING)
         {
             ret = true;
             mStepCnt = 0;
+            analogWrite(DOORBELL_LED_A_PIN, 0);
+            analogWrite(DOORBELL_LED_B_PIN, 0);
         }
         return ret;
     }
@@ -180,6 +188,7 @@ private:
     DoorbellStates mState;
     int mRingCnt;
     StepperMotor mStepper;
+    int mLedValue;
 };
 
 static Doorbell *s_doorbell;
