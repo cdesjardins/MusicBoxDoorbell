@@ -53,8 +53,8 @@ public:
                      DOORBELL_ENABLE_PIN)),
         mLedValue(0)
     {
-        Serial.begin(115200);
-        Serial.println("Doorbell");
+        Serial1.begin(115200);
+        Serial1.println("Doorbell");
         mStepper.setEnabled(false);
         attachInterrupt(digitalPinToInterrupt(DOORBELL_RING_PIN), ::ring, RISING);
     }
@@ -75,8 +75,8 @@ public:
                 mRingCnt++;
                 break;
         }
-        //Serial.print("transition: ");
-        //Serial.println(mState, DEC);
+        //Serial1.print("transition: ");
+        //Serial1.println(mState, DEC);
     }
 
     bool enabled(unsigned long t)
@@ -160,21 +160,6 @@ public:
             mRing = false;
         }
         interrupts();
-        debug();
-    }
-
-    void debug()
-    {
-        if (Serial.available() > 0)
-        {
-            Serial.print("Ring cnt: ");
-            Serial.println(mRingCnt, DEC);
-            int data;
-            do
-            {
-                data = Serial.read();
-            } while (data != -1);
-        }
     }
 
     void ring()
@@ -196,7 +181,7 @@ static Doorbell *s_doorbell;
 void ring()
 {
     s_doorbell->ring();
-    Serial.println("Ring");
+    Serial1.println("Ring");
 }
 
 void setup()

@@ -17,13 +17,6 @@ public:
     void setEnabled(bool enable);
     bool getEnabled();
 
-    void printStepCnt()
-    {
-        Serial.print("StepCnt: ");
-        Serial.println(mStepCnt, DEC);
-        mStepCnt = 0;
-    }
-
 protected:
     void stepIt();
     int mStep;
