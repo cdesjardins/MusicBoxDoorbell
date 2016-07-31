@@ -7,7 +7,7 @@
 */
 
 #include "steppermotor.h"
-
+#include <avr/sleep.h>
 #define DOORBELL_RING_PIN       2
 
 #define DOORBELL_STEPPER_A_PIN  A4
@@ -53,8 +53,7 @@ public:
                      DOORBELL_ENABLE_PIN)),
         mLedValue(0)
     {
-        Serial1.begin(115200);
-        Serial1.println("Doorbell");
+        //Serial1.begin(115200);
         mStepper.setEnabled(false);
         attachInterrupt(digitalPinToInterrupt(DOORBELL_RING_PIN), ::ring, RISING);
     }
@@ -75,8 +74,6 @@ public:
                 mRingCnt++;
                 break;
         }
-        //Serial1.print("transition: ");
-        //Serial1.println(mState, DEC);
     }
 
     bool enabled(unsigned long t)
@@ -118,21 +115,28 @@ public:
 
     bool disabled(unsigned long t)
     {
-        bool ret = false;
         if ((t - mStartTime) > ENABLE_STEP_DELAY)
         {
             if (mStepper.getEnabled() == true)
             {
                 mStepper.setEnabled(false);
             }
-            ret = mRing;
         }
-        return ret;
+        return mRing;
+    }
+
+    void sleepNow()
+    {
+        set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+        sleep_enable();
+        sleep_mode();
+        sleep_disable();
     }
 
     void process()
     {
         unsigned long t = millis();
+        bool goToSleepNow = false;
         noInterrupts();
         switch (mState)
         {
@@ -153,6 +157,10 @@ public:
                 {
                     transition(t);
                 }
+                else
+                {
+                    goToSleepNow = true;
+                }
                 break;
         }
         if (mRing == true)
@@ -160,6 +168,10 @@ public:
             mRing = false;
         }
         interrupts();
+        if (goToSleepNow == true)
+        {
+            sleepNow();
+        }
     }
 
     void ring()
@@ -180,8 +192,9 @@ static Doorbell *s_doorbell;
 
 void ring()
 {
+    sleep_disable();
     s_doorbell->ring();
-    Serial1.println("Ring");
+    //Serial1.println("Ring");
 }
 
 void setup()

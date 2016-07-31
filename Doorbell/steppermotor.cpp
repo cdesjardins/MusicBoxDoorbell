@@ -24,8 +24,7 @@ StepperMotor::StepperMotor(int pina, int pinb, int pinc, int pind, int pinena, i
     mPinc(pinc),
     mPind(pind),
     mPinena(pinena),
-    mPinenb(pinenb),
-    mStepCnt(0)
+    mPinenb(pinenb)
 {
     pinMode(pina, OUTPUT);
     pinMode(pinb, OUTPUT);
@@ -75,6 +74,5 @@ void StepperMotor::stepIt()
     digitalWrite(mPinb, (mSteps[mStep] & 0x02) ? HIGH : LOW);
     digitalWrite(mPinc, (mSteps[mStep] & 0x04) ? HIGH : LOW);
     digitalWrite(mPind, (mSteps[mStep] & 0x08) ? HIGH : LOW);
-    mStepCnt++;
 }
 
