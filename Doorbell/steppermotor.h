@@ -19,6 +19,7 @@ public:
 
 protected:
     void stepIt();
+    void driveLow();
     int mStep;
     static int mSteps[];
     bool mEnabled;

@@ -33,16 +33,17 @@ StepperMotor::StepperMotor(int pina, int pinb, int pinc, int pind, int pinena, i
     pinMode(pinena, OUTPUT);
     pinMode(pinenb, OUTPUT);
 
-    digitalWrite(mPina, LOW);
-    digitalWrite(mPinb, LOW);
-    digitalWrite(mPinc, LOW);
-    digitalWrite(mPind, LOW);
+    driveLow();
 }
 
 void StepperMotor::setEnabled(bool enable)
 {
     digitalWrite(mPinena, (enable == false) ? LOW : HIGH);
     digitalWrite(mPinenb, (enable == false) ? LOW : HIGH);
+    if (enable == false)
+    {
+        driveLow();
+    }
     mEnabled = enable;
 }
 
@@ -63,13 +64,17 @@ void StepperMotor::stepBackward()
     stepIt();
 }
 
-void StepperMotor::stepIt()
+void StepperMotor::driveLow()
 {
     digitalWrite(mPina, LOW);
     digitalWrite(mPinb, LOW);
     digitalWrite(mPinc, LOW);
     digitalWrite(mPind, LOW);
+}
 
+void StepperMotor::stepIt()
+{
+    driveLow();
     digitalWrite(mPina, (mSteps[mStep] & 0x01) ? HIGH : LOW);
     digitalWrite(mPinb, (mSteps[mStep] & 0x02) ? HIGH : LOW);
     digitalWrite(mPinc, (mSteps[mStep] & 0x04) ? HIGH : LOW);
