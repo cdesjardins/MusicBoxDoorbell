@@ -44,7 +44,6 @@ public:
         mStepCnt(0),
         mRing(false),
         mState(DOORBELL_DISABLED),
-        mRingCnt(0),
         mStepper(StepperMotor(DOORBELL_STEPPER_A_PIN,
                      DOORBELL_STEPPER_B_PIN,
                      DOORBELL_STEPPER_C_PIN,
@@ -71,7 +70,6 @@ public:
                 break;
             case DOORBELL_DISABLED:
                 mState = DOORBELL_ENABLED;
-                mRingCnt++;
                 break;
         }
     }
@@ -183,7 +181,6 @@ private:
     int mStepCnt;
     bool mRing;
     DoorbellStates mState;
-    int mRingCnt;
     StepperMotor mStepper;
     int mLedValue;
 };
