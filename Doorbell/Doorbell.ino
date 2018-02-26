@@ -34,6 +34,7 @@ enum DoorbellStates
     DOORBELL_DISABLED,
     DOORBELL_ENABLED,
     DOORBELL_RINGING,
+    DOORBELL_SLEEPING,
 };
 
 class Doorbell
@@ -69,6 +70,9 @@ public:
                 mState = DOORBELL_DISABLED;
                 break;
             case DOORBELL_DISABLED:
+                mState = DOORBELL_SLEEPING;
+                break;
+            case DOORBELL_SLEEPING:
                 mState = DOORBELL_ENABLED;
                 break;
         }
@@ -113,13 +117,20 @@ public:
 
     bool disabled(unsigned long t)
     {
+        bool ret = false;
         if ((t - mStartTime) > ENABLE_STEP_DELAY)
         {
             if (mStepper.getEnabled() == true)
             {
                 mStepper.setEnabled(false);
             }
+            ret = true;
         }
+        return ret;
+    }
+
+    bool sleeping(unsigned long t)
+    {
         return mRing;
     }
 
@@ -152,6 +163,12 @@ public:
                 break;
             case DOORBELL_DISABLED:
                 if (disabled(t) == true)
+                {
+                    transition(t);
+                }
+                break;
+            case DOORBELL_SLEEPING:
+                if (sleeping(t) == true)
                 {
                     transition(t);
                 }
